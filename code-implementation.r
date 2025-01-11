@@ -54,6 +54,49 @@ dataRead2$LightingCondition_numeric <- ifelse(dataRead2$LightingCondition == "Wa
 covariance <- cov(dataRead2$LightingCondition_numeric, dataRead2$Scores)
 print(covariance)
 
+
+# Create dummy variables for LightingCondition
+dummy_lighting <- model.matrix(~ LightingCondition - 1, dataRead2)
+processed_data <- cbind(dummy_lighting, Score = dataRead2$Scores)
+
+# Create dummy variables again
+dummy_lighting <- model.matrix(~ LightingCondition - 1, dataRead2)
+data_Read_Score <- data.frame(dataRead2, dummy_lighting)
+
+# Fit a linear model
+model_Read_Score <- lm(Scores ~ LightingConditionNatural + LightingConditionWarm, data=data_Read_Score)
+summary(model_Read_Score)
+
+# Calculate and print correlation matrix
+cor_Reading_score <- cor(processed_data)
+print(cor_Reading_score)
+
+# Calculate VIF
+vif_read <- 1 / (1 - 0.7283)
+print(vif_read)
+
+# Get residuals and fitted values
+my_res = residuals(model_Read_Score)
+my_fit = fitted(model_Read_Score)
+
+# Plot fitted values vs residuals
+plot(my_fit, my_res)
+
+# Print residuals
+print(my_res)
+
+# Mean of residuals
+mean(residuals(model_Read_Score))
+
+# Residuals from modelRead (undefined)
+residuals <- residuals(modelRead)
+
+# Print residuals, max, and min
+print(residuals)
+max(residuals)
+min(residuals)
+
+
 # Build the model to analyze the effect of 'LightingCondition' alone on 'Scores'
 modelRead <- lm(Scores ~ LightingCondition, data = dataRead2)
 summary(modelRead)
